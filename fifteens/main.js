@@ -1,9 +1,19 @@
 
-let dimension = 450;
+let dimension = 4;
+let previewSize = 300;
+const tileSize = Math.floor(previewSize / dimension);
+
 let startButton = document.querySelector("button");
 let infoImg = document.querySelector('.info');
-
-
+const tiles = [];
+ class Tile {
+ constructor(x,y){
+   this.tileX = x;
+   this.tileY = y;
+   this.targetPosX = x;
+   this.targetPosY = y;
+ }
+ };
 const images = [
     {
       author: 'Иван Айвазовский',
@@ -768,7 +778,31 @@ const getImgUrl = function(){
     return `${base}${rndNum}.jpg`;
 } 
 
+const drawImagePart = function (ctx, img, i, j, tileSize, ratio, margin){
+  ctx.drawImage(img,
+    i * tileSize * ratio,     // image-x
+    j * tileSize * ratio,     // image-y
+    tileSize * ratio,         // image-width
+    tileSize * ratio,         // image-height
+    i * tileSize + margin,    // canvas-x
+    j * tileSize + margin,    // canvas-y
+    tileSize - (margin * 2),  // canvas-width
+    tileSize - (margin * 2),  // canvas-height
+  );
+};
+    
+
 const createTiles = function(){
+
+  for(let i=0; i<dimension; i++){
+    for(let j=0; j<dimension;j++){
+      console.log(i,j);
+      tiles.push(new Tile(i,j));
+      
+      
+ 
+    }
+  }
 
 
 }
@@ -776,14 +810,27 @@ const createTiles = function(){
 const startGame = function(){
 let canvas = document.querySelector("#game-board");
 let ctx = canvas.getContext('2d');
-canvas.width = 450;
-canvas.height = 450;
-ctx.fillRect(0,0,900,900);
+canvas.width = previewSize;
+canvas.height = previewSize;
+ctx.fillRect(0,0,canvas.width,canvas.width);
 const img = new Image();
 img.src = getImgUrl();
-img.addEventListener('load', ()=>{
- ctx.drawImage(img,0,0,img.width,img.width,0,0,canvas.width, canvas.width);
-  });
+img.addEventListener('load', ()=>{ 
+let ratio = img.width / previewSize;
+for(let i=0; i<dimension; i++){
+  for(let j=0; j<dimension;j++){
+    console.log(i,j);
+    tiles.push(new Tile(i,j));
+    drawImagePart(ctx, img, i, j, tileSize, ratio, 3);
+    
+
+  }
+}
+ 
+
+ //ctx.drawImage(img,0,0,img.width,img.width,0,0,canvas.width, canvas.width);
+
+}) 
 }
 
 
